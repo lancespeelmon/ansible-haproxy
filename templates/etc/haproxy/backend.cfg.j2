@@ -42,9 +42,14 @@ backend {{ backend.name }}
 {% for timeout in backend.timeout | default([]) %}
   timeout {{ timeout.type }} {{ timeout.timeout }}
 {% endfor %}
-{% for action in ['reqadd', 'rspadd'] %}
+{% for action in ['reqadd'] %}
 {% for params in backend[action] | default([]) %}
   {{ action }} {{ params.string }}{% if params.cond is defined %} {{ params.cond }}{% endif %}
+{% endfor %}
+{% endfor %}
+{% for action in ['rspadd'] %}
+{% for params in backend[action] | default([]) %}
+  http-response add-header {{ params.string }}{% if params.cond is defined %} {{ params.cond }}{% endif %}
 
 {% endfor %}
 {% endfor %}
