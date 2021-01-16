@@ -89,9 +89,14 @@ listen {{ listen.name }}
   http-response {{ http_response.action }}{% if http_response.param is defined %} {{ http_response.param }}{% endif %}{% if http_response.cond is defined %} {{ http_response.cond }}{% endif %}
 
 {% endfor %}
-{% for action in ['reqadd', 'rspadd'] %}
-{% for params in listen[action] | default([]) %}
+{% for action in ['reqadd'] %}
+{% for params in backend[action] | default([]) %}
   {{ action }} {{ params.string }}{% if params.cond is defined %} {{ params.cond }}{% endif %}
+{% endfor %}
+{% endfor %}
+{% for action in ['rspadd'] %}
+{% for params in backend[action] | default([]) %}
+  http-response add-header {{ params.string }}{% if params.cond is defined %} {{ params.cond }}{% endif %}
 
 {% endfor %}
 {% endfor %}
